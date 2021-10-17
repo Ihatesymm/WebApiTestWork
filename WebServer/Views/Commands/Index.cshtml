@@ -1,0 +1,228 @@
+﻿@model CommandsViewModel
+@{
+    ViewData["Caption"] = "Отправка команды на терминал";
+}
+
+<div class="catalog__head" style="position:relative">
+
+    <div class="box catalog__head-row">
+        <span class="catalog__label">Отправка команды на терминал</span>
+    </div>
+
+    <div class="box catalog__head-row">
+    </div>
+
+    <div class="box catalog__head" style="position: absolute; margin-left: 48%; float: right; margin-top: 5%">
+        @{
+            var selectedName = ViewData["Select_Command_id"] != null ? ViewData.Model.Commands?.FirstOrDefault(x => x.Command_id.ToString() == ViewData["Select_Command_id"].ToString())?.Command_name : "";
+        }
+
+        @using (Html.BeginForm("Index", "Commands", FormMethod.Get, htmlAttributes: new { id = "filterr" }))
+        {
+            <b style="color: #333; font-size: 16px; margin-left: 4%;">Команда</b>
+            <div class="pseudoselect catalog__select">
+                @Html.Hidden("id", ViewData["Select_Command_id"], new { @class = "id_command" })
+                <input type="text" class="pseudoselect__input" placeholder="Выберите команду" value="@selectedName">
+                <div style="margin-left: -28%; top:102%; width: 95%" class="pseudoselect__dropdown custom-scroll">
+                    <div class="pseudoselect__current">@selectedName</div>
+                    <div class="pseudoselect__list">
+                        @foreach (var data in @ViewData.Model.Commands)
+                        {
+                            <li data-id_command="@data.Command_id">@data.Command_name</li>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    @using (Html.BeginForm("SendCommand", "Commands", FormMethod.Post, htmlAttributes: new { id = "sender", name = "sender", style = "margin-top:5%" }))
+    {
+        <b style="color: #333; font-size: 16px; margin-left: 9px;">ID Терминала(ов)</b>
+        @Html.TextArea("terminal_id", new { rows = 14, cols = 40, style = "margin-top: 20px", autocomplete = "off" })
+        @Html.Hidden("command_id", ViewData["Select_Command_id"], new { @class = "id_command" })
+
+        <div class="box catalog__body">
+            @{
+                foreach (var data in @ViewData.Model.Commands)
+                {
+                    if (data?.Command_id.ToString() == @ViewData["Select_Command_id"]?.ToString())
+                    {
+                        <div>
+                            <div style="float:left; clear:none; margin-left:9px; width:200px; height:137px">
+                                <span style="color: #333; font-size: 16px;">@data.Command_first_param</span>
+                                @if (data.Command_first_param != null)
+                                {
+                                    @Html.TextBox("first_param", data.Command_first_defval, new { autocomplete = "off", style = "position:relative; top: 36px" })
+                                }
+                            </div>
+                            <div style="float: left; clear: none; margin-left: 100px; width: 200px; height: 137px">
+                                <span style="color: #333; font-size: 16px;">@data.Command_second_param</span>
+                                @if (data.Command_second_param != null)
+                                {
+                                    @Html.TextBox("second_param", data.Command_second_defval, new { autocomplete = "off", style = "position:relative; top: 36px" })
+                                }
+                            </div>
+                            <div style="float:left; clear:none; margin-left:100px; width:200px">
+                                <span style="color: #333; font-size: 16px;">@data.Command_third_param</span>
+                                @if (data.Command_third_param != null)
+                                {
+                                    @Html.TextBox("third_param", data.Command_third_defval, new { autocomplete = "off", style = "position:relative; top: 36px" })
+                                }
+                            </div>
+                        </div>
+                    }
+                }
+                <div style="width: 100%; margin-left:40%;">
+                    <input type="submit" style="width:160px" value="Отправить" class="btn catalog__btn" />
+                </div>
+            }
+
+        </div>
+    }
+</div>
+
+<div class="catalog__body">
+    <div class="table-wrapper">
+        <table class="catalog__table">
+            <thead>
+                <tr>
+                    <th class="" data-column="0" width="60">№</th>
+                    <th class="sort" data-column="1" width="110">Дата и время</th>
+                    <th class="sort" data-column="2" width="280">Команда</th>
+                    <th class="sort" data-column="3" width="90">Параметр <br>1</th>
+                    <th class="sort" data-column="4" width="90">Параметр <br>2</th>
+                    <th class="sort" data-column="5" width="90">Параметр <br>3</th>
+                    <th class="sort" data-column="6" width="130">Статус</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (ViewData.Model.CommandResults != null)
+                {
+                    for (int i = ViewData.Model.CommandResults.Count - 1; i >= 0 ; i--)
+                    {
+                        ViewData.Model.CommandResults[i].State_name = ViewData.Model.CommandResults[i].State_name ?? ViewData.Model.CommandResults[i].State switch
+                        {
+                            0 => "Не отправлено",
+                            1 => "Не доставлено",
+                            2 => "Доставлено",
+                            _ => "Неизвестный статус"
+                        };
+
+                        int N = i + 1;
+
+                        <tr>
+                            <td>
+                            <p>@N</p>
+                            </td>
+                            <td>
+                                <p>@ViewData.Model.CommandResults[i].Time_created</p>
+                            </td>
+                            <td>
+                                <p>@ViewData.Model.Commands?.FirstOrDefault(x => x.Command_id.ToString() == ViewData.Model.CommandResults[i].Command_id.ToString())?.Command_name</p>
+                            </td>
+                            <td>
+                                <p>@ViewData.Model.CommandResults[i].First_parameter</p>
+                            </td>
+                            <td>
+                                <p>@ViewData.Model.CommandResults[i].Second_parameter</p>
+                            </td>
+                            <td>
+                                <p>@ViewData.Model.CommandResults[i].Third_parameter</p>
+                            </td>
+                            <td>
+                                <p>@ViewData.Model.CommandResults[i].State_name</p>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+@section Scripts
+{
+    <script>
+        $(document).on('click ', function (e) {
+                        if ($('.nav_menu').css('display') == 'block' && $($(e.target).parent()).attr('class') != 'open_menu_mob' && $(window).width() < 993) {
+                $('.nav_menu').fadeOut();
+                        }
+                    });
+        $('.open_menu_mob').on('click', function () {
+            $('.nav_menu').fadeIn();
+                    });
+        $(function () {
+                        let Order_num = $("#Order_num").val();
+                        let Order_direction = $("#Order_direction").val();
+
+            $('[data-column=' + Order_num + ']').addClass(Order_direction > 0 ? 'sort-up' : 'sort-down');
+
+            $('.sort').on('click', function () {
+                $("#Order_num").val($(this).data('column'));
+
+                            if ($(this).attr('class') == "sort") {
+                    $("#Order_direction").val('-1');
+                            } else {
+                                if ($(this).hasClass('sort-up')) {
+                        $("#Order_direction").val('-1');
+                                } else {
+                        $("#Order_direction").val('1');
+                                }
+                            }
+                $('#filterr').submit();
+                        });
+                    });
+        $('.add_item').on('click', function (e) {
+                        e.preventDefault(); // этот код предотвращает стандартное поведение браузера по клику
+            $('.action_name').val($(this).data('action'));
+            $('#filterr_action').submit();
+                    });
+        $('.edit_item').on('click', function () {
+            $('.id_action').val($(this).data('id'));
+            $('.name_action').val($(this).data('name'));
+            $('.action_name').val($(this).data('action'));
+            $('#filterr_action').submit();
+                    });
+        $('.delete_item').on('click', function () {
+            $('#filterr_delete').find('.id_action_del').val($(this).data('id'));
+            $('.edite_add_block').fadeIn();
+                    });
+        $('.delete_item_ok').on('click', function () {
+            $('#filterr_delete').submit();
+            $('.edite_add_block').fadeOut();
+                    });
+        $('.btn.catalog__btn.gray').on('click', function (e) {
+                        e.preventDefault(); // этот код предотвращает стандартное поведение браузера по клику
+                        if ($('.del_formm').css('display') == 'block') {
+                $('.edite_add_block').fadeOut();
+                        } else {
+                            location.href = window.location.href;
+                        }
+                    });
+        $('.btn.catalog__btn').on('click', function (e) {
+                        e.preventDefault();
+            $('#sender').submit();
+                    });
+
+        $('.pseudoselect__list li').on('click', function (e) {
+                        e.preventDefault();
+            $('#filterr').submit();
+                    })
+
+        $('.page_table').on('click', function () {
+                        var page = $(this).data('page');
+            $('.page_table.active').removeClass('active');
+            $(this).addClass('active');
+            $('.active_list').removeClass('active_list');
+            $('[data-list=' + page + ']').addClass('active_list');
+            $("body,html").animate({
+                        scrollTop: 0
+            }, 800);
+                    });
+    </script>
+
+}
+
+

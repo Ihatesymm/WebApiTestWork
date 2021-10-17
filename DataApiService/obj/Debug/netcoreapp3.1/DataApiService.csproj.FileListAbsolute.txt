@@ -1,0 +1,10 @@
+C:\Users\Alexey\Desktop\Шаблон\DataApiService\bin\Debug\netcoreapp3.1\DataApiService.deps.json
+C:\Users\Alexey\Desktop\Шаблон\DataApiService\bin\Debug\netcoreapp3.1\DataApiService.dll
+C:\Users\Alexey\Desktop\Шаблон\DataApiService\bin\Debug\netcoreapp3.1\DataApiService.pdb
+C:\Users\Alexey\Desktop\Шаблон\DataApiService\obj\Debug\netcoreapp3.1\DataApiService.csproj.AssemblyReference.cache
+C:\Users\Alexey\Desktop\Шаблон\DataApiService\obj\Debug\netcoreapp3.1\DataApiService.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Alexey\Desktop\Шаблон\DataApiService\obj\Debug\netcoreapp3.1\DataApiService.AssemblyInfoInputs.cache
+C:\Users\Alexey\Desktop\Шаблон\DataApiService\obj\Debug\netcoreapp3.1\DataApiService.AssemblyInfo.cs
+C:\Users\Alexey\Desktop\Шаблон\DataApiService\obj\Debug\netcoreapp3.1\DataApiService.csproj.CoreCompileInputs.cache
+C:\Users\Alexey\Desktop\Шаблон\DataApiService\obj\Debug\netcoreapp3.1\DataApiService.dll
+C:\Users\Alexey\Desktop\Шаблон\DataApiService\obj\Debug\netcoreapp3.1\DataApiService.pdb
